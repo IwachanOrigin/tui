@@ -15,7 +15,7 @@ ci::Console& ci::Console::getInstance()
 
 bool ci::Console::init(const std::string& path, const std::string& name)
 {
-  m_logfileName = path + name + "_" + helper::getCurrentDateStr() + "_" + EXTENTION;
+  m_logfileName = path + name + "_" + helper::getCurrentDateStr() + EXTENTION;
   return true;
 }
 
