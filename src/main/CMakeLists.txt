@@ -3,6 +3,7 @@ set(main_src
   main.cpp
   console.cpp
   console.h
+  datehelper.h
 )
 
 add_executable(

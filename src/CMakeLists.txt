@@ -24,7 +24,7 @@ set_property(GLOBAL PROPERTY AUTOGEN_TARGETS_FOLDER AutoGenFiles)
 set_property(GLOBAL PROPERTY AUTOGEN_SOURCE_GROUP AutoGenFiles)
 
 if (WIN32)
-  set(CURSES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../_assets/PDCurses)
+  set(CURSES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/_assets/PDCurses)
   set(CURSES_INCLUDE_DIRS ${CURSES_PATH}/include)
   set(CURSES_LIBRARIES ${CURSES_PATH}/lib/pdcurses.lib)
 else()
