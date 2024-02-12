@@ -1,11 +1,27 @@
 
 # tui 
 
-## For Linux
+This is a very simple TUI.  
 
-    I need to libncursesw5-dev when you will build this code.  
+## DEMO
 
-## For Windows
 
-    I need to PDCurses when you will build this code.  
-    But it exist to src/_assets dir.  
+## Dependency
+### Linux
+
+I need to libncursesw5-dev when you will build this code.  
+
+### Windows
+
+I need to PDCurses when you will build this code.  
+But it exist to src/_assets dir.  
+
+# Build
+
+Windows and Linux are the same.  
+
+    cd src  
+    cmake -S . -B build  
+    cmake --build build  
+
+
