@@ -5,6 +5,10 @@ This is a very simple TUI.
 
 ## DEMO
 
+![demo](./images/demo.gif)  
+
+## Output Log
+![log](./images/log.png)
 
 ## Dependency
 ### Linux
