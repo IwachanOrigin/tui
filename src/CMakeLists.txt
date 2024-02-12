@@ -32,6 +32,14 @@ else()
   find_package(Curses REQUIRED)
 endif()
 
-include_directories(${CURSES_INCLUDE_DIRS})
+include_directories(
+  ${CURSES_INCLUDE_DIRS}
+  tui
+)
 
-add_subdirectory(main)
+# tui is lib name by main/tui directory.
+set(TUI_LIB "tui")
+
+add_subdirectory(tui)
+add_subdirectory(example)
+

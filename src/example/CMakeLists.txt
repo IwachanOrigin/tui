@@ -1,9 +1,6 @@
 
 set(main_src
   main.cpp
-  console.cpp
-  console.h
-  datehelper.h
 )
 
 add_executable(
@@ -14,5 +11,6 @@ add_executable(
 target_link_libraries(
   ${PROJECT_NAME}
   ${CURSES_LIBRARIES}
+  ${TUI_LIB}
 )
 
