@@ -1,7 +1,16 @@
 
 #include "console.h"
+#include <fstream>
 
 namespace ci = console_input;
+
+const std::string LOGFILENAME = "outputlog.txt";
+
+ci::Console& ci::Console::getInstance()
+{
+  static Console inst;
+  return inst;
+}
 
 ci::Console::Console()
 {
@@ -116,7 +125,8 @@ void ci::Console::inputCheck()
     {
       if (!inputStr.empty())
       {
-        this->sendFormattedMsg(COLOR_WHITE, "> ", COLOR_WHITE, inputStr);
+        //this->sendFormattedMsg(COLOR_WHITE, "> ", COLOR_WHITE, inputStr);
+        this->writeLog(inputStr);
         if (inputStr.compare("exit") == 0)
         {
           m_finished = true;
@@ -138,13 +148,15 @@ void ci::Console::inputCheck()
 
     case KEY_UP:
     {
-      wscrl(m_outputLine, -1);
+      m_logOffset = (m_logOffset > 0) ? m_logOffset - 1 : 0;
+      this->showLogs();
     }
     break;
 
     case KEY_DOWN:
     {
-      wscrl(m_outputLine, 1);
+      ++m_logOffset;
+      this->showLogs();
     }
     break;
 
@@ -156,6 +168,48 @@ void ci::Console::inputCheck()
   }
 }
 
+void ci::Console::writeLog(const std::string& message)
+{
+  {
+    std::lock_guard<std::mutex> lock(m_logMutex);
+    std::ofstream logfile(LOGFILENAME, std::ios::app);
+    if (logfile)
+    {
+      logfile << message << std::endl;
+      ++m_logOffset;
+    }
+  }
+  this->showLogs();
+}
 
+void ci::Console::showLogs()
+{
+  {
+    std::lock_guard<std::mutex> lock(m_logMutex);
+    std::ifstream logfile(LOGFILENAME);
+    std::string line = "";
+    int lineCount = 0;
+    int maxY = 0, maxX = 0;
+    getmaxyx(m_outputLine, maxY, maxX);
+
+    while (lineCount < m_logOffset && std::getline(logfile, line))
+    {
+      ++lineCount;
+    }
+
+    // Clear window
+    werase(m_outputLine);
+    // Write box
+    box(m_outputLine, 0, 0);
+
+    int currentLine = 1;
+    while(std::getline(logfile, line) && currentLine < maxY - 1)
+    {
+      mvwprintw(m_outputLine, currentLine++, 1, "%s", line.substr(0, maxX - 2).c_str());
+    }
+
+    wrefresh(m_outputLine);
+  }
+}
 
 
