@@ -37,8 +37,7 @@ private:
   bool m_finished = false;
   std::mutex m_logMutex;
   int m_logOffset = 0;
-
-  void sendFormattedMsg(const short& prefixColor, const std::string& prefix, const short& color, const std::string& format, ...);
+  unsigned int m_logLineCount = 0;
 };
 
 } // console_input

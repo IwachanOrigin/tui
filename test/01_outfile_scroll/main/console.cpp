@@ -4,7 +4,8 @@
 
 namespace ci = console_input;
 
-const std::string LOGFILENAME = "outputlog.txt";
+const std::string LOGFILENAME = "outputlog";
+const std::string EXTENTION = ".log";
 
 ci::Console& ci::Console::getInstance()
 {
@@ -65,39 +66,6 @@ ci::Console::~Console()
   }
 
   endwin();
-}
-
-void ci::Console::sendFormattedMsg(const short& prefixColor, const std::string& prefix, const short& color, const std::string& format, ...)
-{
-  va_list args;
-  va_start(args, format.c_str());
-
-  if (has_colors())
-  {
-    if (!prefix.empty())
-    {
-      wattron(m_outputLine, A_BOLD | COLOR_PAIR(prefixColor));
-      wprintw(m_outputLine, prefix.c_str());
-    }
-
-    if (color == COLOR_WHITE)
-    {
-      wattroff(m_outputLine, A_BOLD);
-    }
-    wattron(m_outputLine, COLOR_PAIR(color));
-    vwprintw(m_outputLine, format.c_str(), args);
-
-    wattroff(m_outputLine, A_BOLD | COLOR_PAIR(color));
-  }
-  else
-  {
-    wprintw(m_outputLine, prefix.c_str());
-    vwprintw(m_outputLine, format.c_str(), args);
-  }
-  wprintw(m_outputLine, "\n");
-
-  wrefresh(m_outputLine);
-  va_end(args);
 }
 
 void ci::Console::inputCheck()
@@ -176,7 +144,7 @@ void ci::Console::writeLog(const std::string& message)
     if (logfile)
     {
       logfile << message << std::endl;
-      ++m_logOffset;
+      ++m_logLineCount;
     }
   }
   this->showLogs();
@@ -191,6 +159,12 @@ void ci::Console::showLogs()
     int lineCount = 0;
     int maxY = 0, maxX = 0;
     getmaxyx(m_outputLine, maxY, maxX);
+
+    // Auto scroll.
+    if (m_logLineCount > maxY)
+    {
+      ++m_logOffset;
+    }
 
     while (lineCount < m_logOffset && std::getline(logfile, line))
     {

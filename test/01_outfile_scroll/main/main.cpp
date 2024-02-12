@@ -12,7 +12,7 @@ void anotherThread()
 {
   unsigned int index = 0;
   ci::Console::getInstance().writeLog("started another thread.");
-  std::chrono::milliseconds ms(10);
+  std::chrono::milliseconds ms(1000);
   while(1)
   {
     if (ci::Console::getInstance().isFinished())
