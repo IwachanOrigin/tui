@@ -29,7 +29,7 @@ void anotherThread()
 
 int main(int argc, char* argv[])
 {
-  // Init
+  ci::Console::getInstance().init("", "output");
   ci::Console::getInstance().writeLog("started main thread.");
 
   std::thread th(anotherThread);

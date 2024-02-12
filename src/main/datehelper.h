@@ -7,27 +7,27 @@
 #include <iomanip>
 #include <sstream>
 #include <iostream>
+#include <ctime>
 
 namespace helper
 {
 
-static std::wstring getCurrentDateWStr()
+static std::string getCurrentDateStr()
 {
-  struct tm timeinfo;
-  errno_t err = 0;
-
   auto now = std::chrono::system_clock::now();
-  auto now_c = std::chrono::system_clock::to_time_t(now);
-  err = localtime_s(&timeinfo, &now_c);
-  if (err != 0)
-  {
-    std::wcerr << "Failed getCurrentDateWStr." << std::endl;
-    return L"";
-  }
+  auto now_t = std::chrono::system_clock::to_time_t(now);
+#ifdef _WIN32
+  struct tm _tm {};
+  auto err = localtime_s(&_tm, &now_t);
+  std::ostringstream oss;
+  oss << std::put_time(&_tm, "%Y%m%d_%H%M%S");
+#else
+  auto tm_localTime = *std::localtime(&now_t);
+  std::ostringstream oss;
+  oss << std::put_time(&tm_localTime, "%Y%m%d_%H%M%S");
+#endif
 
-  std::wstringstream ss;
-  ss << std::put_time(&timeinfo, L"%Y%m%d_%H%M%S");
-  return ss.str();
+  return oss.str();
 }
 
 } // helper

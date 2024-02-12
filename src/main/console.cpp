@@ -1,16 +1,22 @@
 
 #include "console.h"
+#include "datehelper.h"
 #include <fstream>
 
 namespace ci = console_input;
 
-const std::string LOGFILENAME = "outputlog";
 const std::string EXTENTION = ".log";
 
 ci::Console& ci::Console::getInstance()
 {
   static Console inst;
   return inst;
+}
+
+bool ci::Console::init(const std::string& path, const std::string& name)
+{
+  m_logfileName = path + name + "_" + helper::getCurrentDateStr() + "_" + EXTENTION;
+  return true;
 }
 
 ci::Console::Console()
@@ -48,7 +54,6 @@ ci::Console::Console()
   cbreak();
   noecho();
   keypad(m_inputLine, TRUE);
-  //keypad(stdscr, TRUE);
 }
 
 ci::Console::~Console()
@@ -93,7 +98,6 @@ void ci::Console::inputCheck()
     {
       if (!inputStr.empty())
       {
-        //this->sendFormattedMsg(COLOR_WHITE, "> ", COLOR_WHITE, inputStr);
         this->writeLog(inputStr);
         if (inputStr.compare("exit") == 0)
         {
@@ -140,7 +144,7 @@ void ci::Console::writeLog(const std::string& message)
 {
   {
     std::lock_guard<std::mutex> lock(m_logMutex);
-    std::ofstream logfile(LOGFILENAME, std::ios::app);
+    std::ofstream logfile(m_logfileName, std::ios::app);
     if (logfile)
     {
       logfile << message << std::endl;
@@ -154,14 +158,14 @@ void ci::Console::showLogs()
 {
   {
     std::lock_guard<std::mutex> lock(m_logMutex);
-    std::ifstream logfile(LOGFILENAME);
+    std::ifstream logfile(m_logfileName);
     std::string line = "";
     int lineCount = 0;
     int maxY = 0, maxX = 0;
     getmaxyx(m_outputLine, maxY, maxX);
 
     // Auto scroll.
-    if (m_logLineCount > maxY)
+    if (m_logLineCount > maxY - 2)
     {
       ++m_logOffset;
     }

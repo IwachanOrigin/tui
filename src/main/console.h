@@ -21,6 +21,7 @@ class Console
 public:
   static Console& getInstance();
 
+  bool init(const std::string& path, const std::string& name);
   bool isFinished() const { return m_finished; }
   void inputCheck();
   void writeLog(const std::string& message);
@@ -38,6 +39,7 @@ private:
   std::mutex m_logMutex;
   int m_logOffset = 0;
   unsigned int m_logLineCount = 0;
+  std::string m_logfileName = "";
 };
 
 } // console_input
